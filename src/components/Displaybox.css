@@ -1,0 +1,69 @@
+.dashboard-box{
+    background-color: #e5e6e7;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    border-radius: 10px;
+    /* box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2); */
+    padding: 10px;
+    outline: 1px solid black;
+    margin: 10px;
+    
+}
+.redShadow{
+    box-shadow: inset 0 0 10px 5px rgba(214, 44, 44, 0.2);
+    color: blue;
+}
+.greenShadow{
+    box-shadow: inset 0 0 10px 5px rgba(44, 214, 44, 0.2);
+    color: lightgreen;
+}
+.blueShadow{
+    box-shadow: inset 0 0 10px 5px rgba(44, 44, 214, 0.2);
+    color: lightcoral;
+}
+/* style text */
+p{
+    font-family: ABeeZee, sans-serif;
+    font-weight: bold;
+    color: rgb(44, 140, 103);
+    text-transform: none;
+    font-style: normal;
+    text-shadow: 0px 0px 0px rgba(136, 209, 177, 1);
+    /* text in same line */
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+}
+h3{
+    font-family: ABeeZee, sans-serif;
+    font-size: 23px;
+    font-weight: bold;
+    color: rgb(59, 104, 68);
+    text-transform: none;
+    font-style: normal;
+    line-height: 1.1em;
+    letter-spacing: 1.6px;
+    text-shadow: 0px 0px 0px rgba(136, 209, 177, 1);
+}
+.predShadow{
+    color: rgb(209, 74, 44);
+}
+.pgreenShadow{
+    color: rgb(26, 147, 26);
+}
+.pblueShadow{
+    color: rgb(61, 76, 144);
+}
+.hredShadow{
+    color: rgb(182, 18, 18);
+}
+.hgreenShadow{
+    color: rgb(13, 128, 13);
+}
+.hblueShadow{
+    color: rgb(22, 22, 182);
+}

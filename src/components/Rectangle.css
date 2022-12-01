@@ -1,0 +1,132 @@
+.mainSquare {
+  width: 80%;
+  height: 80%;
+  background-color: #000;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid #000;
+  border-radius: 5px;
+  box-shadow: 0 0 10px #000;
+  transition: 0.5s;
+}
+
+.rectangleContainer {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  overflow: hidden;
+  z-index: 33;
+}
+
+.rectangleContainer:hover {
+  fill: rgb(231, 65, 28);
+  stroke: #f0ed2e;
+  stroke-width: 3px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-miterlimit: 10;
+  stroke-dasharray: 0, 0;
+  stroke-dashoffset: 0;
+  stroke-opacity: 1;
+  opacity: 0.8;
+  /* shine outlin */
+}
+
+.whiteBox {
+  display: none;
+  background-color: #fff;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 1px solid #000;
+  border-radius: 5px;
+  box-shadow: 0 0 10px #000;
+  overflow: hidden;
+}
+
+.titleHeader {
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 4px;
+  font-size: xx-large;
+  color: black;
+}
+.rectagleBackdrop {
+  background-color: rgb(233, 218, 218);
+  border-radius: 5px;
+  width: 100%;
+  height: 100%;
+  padding-bottom: 50px;
+}
+.title {
+  margin: 2px;
+  font-size: medium;
+  color: black;
+}
+
+.amountdebit {
+  font-size: medium;
+  color: rgb(230, 36, 36);
+}
+.amountcredit {
+  font-size: medium;
+  color: rgb(20, 105, 20);
+}
+.balanceAmount {
+  font-size: medium;
+  color: rgb(0, 0, 0);
+}
+.tableHead {
+  font-style: italic;
+  font-size: medium;
+  font-weight: 100;
+}
+.rectangleChildText {
+  resize: both;
+  color: black;
+  overflow: auto;
+  resize: none;
+  overflow: hidden;
+  text-align: justify;
+  margin-top: 2px;
+}
+.rectangleChildHead {
+  resize: both;
+  color: white;
+  overflow: auto;
+  font-weight: 300;
+  font-style: italic;
+  font-size: x-large;
+  padding: 4px;
+  border-radius: 5px;
+  width: auto;
+  resize: none;
+  overflow: hidden;
+  text-align: left;
+  /* //text bottom */
+}
+.divideLine {
+  border-top: 3px solid white;
+}
+.rectangleItemContainer {
+  overflow: hidden;
+  fill-opacity: 0.5;
+}
+
+.rectangleChildHead span {
+  background-color: rgb(43, 36, 36);
+  padding: 6px;
+  border-radius: 2px;
+
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
