@@ -16,7 +16,7 @@ type currentStateProps = {
   child_type: string | undefined;
 };
 
-function RectangleBox({}: Props) {
+function RectangleBox() {
   const [parent, setParent] = React.useState<any>();
   const [list, setList] = React.useState<any>();
   const [labelName, setLabelName] = React.useState<string>("");
@@ -27,34 +27,32 @@ function RectangleBox({}: Props) {
   });
   const [category, setCategory] = React.useState<string>();
   const expenseRef = React.useRef<boolean>(true);
-  const [pathDirectory, setPathDirectory] = React.useState<string>("");
   const [path, setPath] = React.useState<string[]>(["Transactions"]);
 
   useEffect(() => {
     const fetchparent = async () => {
       setLoading(true);
       const result = await fetch(
-        `http://127.0.0.1:4000/getsummary/category/summary/date?child_type=${currentState?.parent_type}&parent_type=${currentState?.child_type}&expense_type=${category}`
+        //http://127.0.0.1:4000
+        //https://moneyviz.azurewebsites.net/getsummary/category/summary/date?child_type=expense&parent_type=expense&expense_type=credit
+        `https://moneyviz.azurewebsites.net/getsummary/category/summary/date?child_type=${currentState?.parent_type}&parent_type=${currentState?.child_type}&expense_type=${category}`
       );
       const parent = await result.json();
       setParent(parent);
       setLoading(false);
-      setPathDirectory((prev) => {
-        if (prev === "/") {
-          return "";
-        }
-        return prev + "/" + currentState?.parent_type;
-      });
     };
     fetchparent();
   }, [category, currentState]);
 
   useEffect(() => {
     setPath((prev) => {
-      if(parent && ReturnCategory(parent[0].category) !== prev[prev.length-1]){
+      if (
+        parent &&
+        ReturnCategory(parent[0].category) !== prev[prev.length - 1]
+      ) {
         return [...prev, ReturnCategory(parent[0].category)];
       }
-      return prev;    
+      return prev;
     });
   }, [parent]);
   const showWhitebox = (event: any) => {
@@ -207,9 +205,12 @@ function RectangleBox({}: Props) {
                   <>
                     {path.map((x) => {
                       return (
-                        //if x is last element make it bold                            
-                        <p  className={x === path[path.length - 1] ? "bold" : ""}>
-                          {x} <i className="fa-solid fa-angles-right"></i> &nbsp;
+                        //if x is last element make it bold
+                        <p
+                          className={x === path[path.length - 1] ? "bold" : ""}
+                        >
+                          {x} <i className="fa-solid fa-angles-right"></i>{" "}
+                          &nbsp;
                         </p>
                       );
                     })}
@@ -247,53 +248,58 @@ function RectangleBox({}: Props) {
         )}
 
         <div className="whiteBox" id="whitebox">
-          {list && <RectangleList labelName={labelName} listData={list} />}
+          {list && !loading && (
+            <RectangleList labelName={labelName} listData={list} />
+          )}
         </div>
       </div>
     </Container>
   );
 }
 
-function RectangleList({ listData, labelName }: ListProps) {
+function RectangleList({ listData, labelName}: ListProps) {
   return (
-    <Table className="p-4">
-      <thead>
-        <tr>
-          <th colSpan={10} className="bg-info tableHead">
-            Recent Transactions-
-            <Badge bg="success">
-              {labelName
-                .toString()
-                .split("_")
-                .map((s: string) => s.charAt(0).toUpperCase() + s.substring(1))
-                .join(" ")}
-            </Badge>
-          </th>
-        </tr>
-        <tr>
-          <th className="title">Date</th>
-          <th className="title">Amount</th>
-          <th className="title">Balance</th>
-        </tr>
-      </thead>
+    <>
+      <div className="font-bold">
+        {labelName
+          .toString()
+          .split("_")
+          .map((s: string) => s.charAt(0).toUpperCase() + s.substring(1))
+          .join(" ")}
+      </div>
 
-      <tbody>
-        {listData?.map((d: any, i: any) => (
-          <tr key={i}>
-            <td>
-              <Badge bg="primary" className="mr-2">
-                {d.transaction_date}
-              </Badge>
-            </td>
-            <td className={"amount" + d.type}>
-              {"£" + (d.credit_amount + d.debit_amount).toFixed(2)}
-            </td>
-
-            <td className="balanceAmount">{"£" + d.balance}</td>
+      <Table className="p-4">
+        <thead>
+          <tr>
+            <th colSpan={10} className="bg-info tableHead">
+              Recent Transactions
+            </th>
           </tr>
-        ))}
-      </tbody>
-    </Table>
+          <tr>
+            <th className="title">Date</th>
+            <th className="title">Amount</th>
+            <th className="title">Balance</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {listData?.map((d: any, i: any) => (
+            <tr key={i}>
+              <td>
+                <Badge bg="primary" className="mr-2">
+                  {d.transaction_date}
+                </Badge>
+              </td>
+              <td className={"amount" + d.type}>
+                {"£" + (d.credit_amount + d.debit_amount).toFixed(2)}
+              </td>
+
+              <td className="balanceAmount">{"£" + d.balance}</td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </>
   );
 }
 
