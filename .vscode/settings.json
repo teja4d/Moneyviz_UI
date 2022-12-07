@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/ef948929-b54b-480a-a420-90e457d847e4/AppServices/subscriptions/ef948929-b54b-480a-a420-90e457d847e4/resourceGroups/moneyvizui_group/providers/Microsoft.Web/sites/moneyvizui",
+    "appService.deploySubpath": "."
+}
