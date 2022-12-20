@@ -1,0 +1,31 @@
+.rectangleChildText{
+    resize: both;
+    color: white;
+    resize: none;
+    overflow: hidden;
+    float: left;
+    padding: auto;
+    margin: 4px;
+  }
+  .divideLine {
+    border-top: 1px solid white;
+  }
+  .rectangleChildHead {
+    resize: both;
+    color: white;
+    overflow: auto;
+    font-weight: 300;
+    font-style: italic;
+    font-size: x-large;
+    padding: 4px;
+    border-radius: 5px;
+    width: auto;
+    resize: none;
+    overflow: hidden;
+    text-align: left;
+    /* //text bottom */
+  }
+  .rectangleChildHead p{
+    font-size: larger;
+    bottom: 0;
+  }

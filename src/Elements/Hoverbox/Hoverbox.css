@@ -1,0 +1,38 @@
+.title {
+  margin: 2px;
+  font-size: medium;
+  color: rgb(47, 40, 40);
+}
+.balanceAmount {
+  font-size: medium;
+  color: rgb(0, 0, 0);
+}
+.tableHead {
+  font-style: italic;
+  font-size: medium;
+  font-weight: 100;
+}
+.amountdebit {
+  font-size: medium;
+  color: rgb(230, 36, 36);
+}
+.amountcredit {
+  font-size: medium;
+  color: rgb(20, 105, 20);
+}
+
+.whiteBox {
+  display: none;
+  background-color: #fff;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 1px solid #000;
+  box-shadow: 0 0 10px #000;
+  overflow: hidden;
+}
+.labelText {
+  font-size: medium;
+  color: rgb(47, 40, 40);
+  margin-top: 6px;
+}

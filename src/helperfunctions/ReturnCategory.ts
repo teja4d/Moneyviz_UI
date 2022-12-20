@@ -1,14 +1,54 @@
-export const ReturnCategory = (category: string) => {
+export type Category = 'transaction' | 'description' | 'date' | 'day'|'day_transactions';
+export type labelCategory = 'Incoming/Outgoing' | 'Loyds category' | 'Transaction description' | 'Transaction date' | 'Transaction on day';
+
+export type ReturnCategoryType = {
+    label: labelCategory;
+    parent: string;
+    child: string;
+    clicked?: boolean;
+}
+
+export const ReturnCategory = (category: Category,child:string,clicked=false) : ReturnCategoryType => {
     switch(category) {
         case 'transaction':
-            return 'Incoming/Outgoing';
+            return {
+                label:'Incoming/Outgoing',
+                parent: 'expense',
+                child: child,
+                clicked: clicked
+            }
         case 'description':
-            return 'Loyds category';
+            return {
+                label:'Loyds category',
+                parent: 'transaction',
+                child: child,
+                clicked: clicked
+            }
         case 'date':
-            return 'Transaction description';
+            return {
+                label:'Transaction description',
+                parent: 'description',
+                child: child
+            }
         case 'day':
-            return 'Transaction date';
+            return {
+                label:'Transaction date',
+                parent: 'date',
+                child: child,
+                clicked: clicked
+            }
+        case 'day_transactions':
+            return {
+                label:'Transaction on day',
+                parent: 'day',
+                child: child,
+                clicked: clicked
+            }
         default:
-            return 'Transaction day';
+            return {
+                label:'Incoming/Outgoing',
+                parent: 'expense',
+                child: ''
+            }
     }
 }

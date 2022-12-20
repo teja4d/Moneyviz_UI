@@ -12,7 +12,7 @@ type SliderProps={
 }
 
 function RangeSelector({setRange}:SliderProps) {
-  const [sliderValue, setSliderValue] = React.useState<number>(0);
+  const [sliderValue, setSliderValue] = React.useState<number>(50);
   const [reactSelectValue, setReactSelectValue] =
     React.useState<ReactSelectOptions|null>({value:"Days",label:"Days"});
   const [maxRange, setMaxRange] = React.useState<string>();
@@ -20,15 +20,12 @@ function RangeSelector({setRange}:SliderProps) {
     ReactSelectOptions[]
   >([
     { value: "Months", label: "Months" },
-    { value: "Years", label: "Years" },
     { value: "Days", label: "Days" },
   ]);
 
   useEffect(() => {
     if (reactSelectValue?.value === "Months") {
       setMaxRange("24");
-    } else if (reactSelectValue?.value === "Years") {
-      setMaxRange("10");
     } else if (reactSelectValue?.value === "Days") {
       setMaxRange("120");
     }
@@ -50,7 +47,7 @@ function RangeSelector({setRange}:SliderProps) {
         <hr></hr>
           <input
             type="range"
-            min="1"
+            min="2"
             max={maxRange}
             className="slider"
             id="myRange"
@@ -58,10 +55,8 @@ function RangeSelector({setRange}:SliderProps) {
             onChange={(e) => {
               if (reactSelectValue?.value === "Months") {
                 setSliderValue(parseInt(e.target.value) * 30);
-              } else if (reactSelectValue?.value === "Years") {
-                setSliderValue(parseInt(e.target.value) * 365);
-              } else if (reactSelectValue?.value === "Days") {
-                setSliderValue(parseInt(e.target.value));
+              }else if (reactSelectValue?.value === "Days") {
+                setSliderValue(120-parseInt(e.target.value));
               }
             }}
           />

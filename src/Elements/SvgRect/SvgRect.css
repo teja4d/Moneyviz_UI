@@ -1,0 +1,44 @@
+.rectangleItemContainer {
+  overflow: hidden;
+  fill: url(#gradient);
+}
+.stop {
+  stop-color: red;
+  direction: rtl;
+}
+.altstop {
+  stop-color: rgb(4, 185, 37);
+  direction: rtl;
+}
+.rectHover {
+  cursor: pointer;
+  overflow: hidden;
+  fill: aliceblue !important;
+  fill-opacity: 0 !important;
+}
+
+.debitstop {
+  stop-color: red;
+  direction: rtl;
+}
+.debitaltstop {
+  stop-color: rgb(193, 88, 88);
+  direction: rtl;
+}
+.creditstop {
+  stop-color: rgb(4, 185, 37);
+  direction: rtl;
+}
+.creditaltstop {
+  stop-color: rgb(181, 246, 146);
+  direction: rtl;
+}
+
+.stop {
+  stop-color: red;
+  direction: rtl;
+}
+.altstop {
+  stop-color: rgb(4, 185, 37);
+  direction: rtl;
+}

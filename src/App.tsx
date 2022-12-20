@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
+
 import {
   Button,
   Container,
@@ -10,9 +11,10 @@ import {
 import ReactSelect from "react-select";
 import "./App.css";
 import Displaybox from "./components/Displaybox";
+import DisplayCategory from "./components/DisplayCategory";
 import LineGraph from "./components/linegraph";
-import RectangleBox from "./components/Rectangle";
-import RangeSelector from "./Elements/Slider";
+import TreemapComponent from "./components/TreemapComponent";
+import RangeSelector from "./Elements/Slider/Slider";
 
 type ReactSelectOption = {
   value: string;
@@ -42,25 +44,30 @@ export type summary = {
   min_average_balance_date: string;
 };
 
-
-
 function App() {
   const [selectedYear, setSelectedYear] = React.useState<string>("");
   const [fromDate, setFromDate] = React.useState<Date | string>();
   const [toDate, setToDate] = React.useState<Date | string>();
   const [selectedFile, setSelectedFile] = React.useState(null);
   const [apiData, setApiData] = React.useState<apiData[]>();
-  const[mvgData,setMvgData]=React.useState<avgData[]>();
-  const[mvgAvg,setMvgAvg]=React.useState<boolean>(false);
+  const [mvgAvg, setMvgAvg] = React.useState<boolean>(false);
   const [buttonClicked, setButtonClicked] = React.useState<boolean>(false);
   const [show, setShow] = useState(false);
   const [showCustomdate, setShowCustomdate] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const[range,setRange]=useState<number>(0);
+  const [range, setRange] = useState<number>(0);
   const [summary, setSummary] = useState<summary>();
   const [refresh, setRefresh] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<boolean>(false);
+  const options =
+    //react Select options
+    [
+      { value: 0, label: "Show average balance graph" },
+      { value: 1, label: "Show data categories by bank" },
+      { value: 2, label: "Show data categories by general" },
+    ];
+  const [selectedType, setSelectedType] = useState<number>();
   const [years, setYears] = React.useState<ReactSelectOption[] | undefined>([
     { value: "", label: "All Years" },
     { value: "2015", label: "2015" },
@@ -77,21 +84,17 @@ function App() {
       setShow(false);
       const formData = new FormData();
       formData.append("file", selectedFile);
-      await fetch("http://127.0.0.1:5000/upload/csv", {
+      await fetch("http://127.0.0.1:4000/upload/csv", {
         method: "POST",
         body: formData,
       })
         .then((response) => response.json())
         .then((data: apiData[]) => {
-          //date format conversion
-
           setApiData(data);
-          //if date is null in the api response,called the api again with the date range
-          // setButtonClicked(true);
         })
         //call summary api
         .then(async () => {
-          await fetch(`http://127.0.0.1:5000/getsummary/date`)
+          await fetch(`http://127.0.0.1:4000/getsummary/date`)
             .then((response) => response.json())
             .then((data) => {
               setSummary(data);
@@ -100,16 +103,13 @@ function App() {
         .catch((error) => {
           console.error("Error:", error);
           setErrorMsg(true);
-        }
-        );
+        });
     }
   }, [selectedFile]);
 
   useEffect(() => {
     handleSubmit();
-    //call handle sumbit again
-
-  }, [selectedFile, handleSubmit,refresh]);
+  }, [selectedFile, handleSubmit, refresh]);
 
   const handleFileSelect = (event: any) => {
     event.preventDefault();
@@ -117,19 +117,22 @@ function App() {
   };
 
   useEffect(() => {
-   const getMovingAvg=async()=>{
-      await fetch(`http://127.0.0.1:5000/getsummary/movingaverage?start_date=${fromDate?.toString()||null}&end_date=${toDate?.toString()||null}&moving_average=${range}`)
+    const getMovingAvg = async () => {
+      await fetch(
+        `http://127.0.0.1:4000/getsummary/movingaverage?start_date=${
+          fromDate?.toString() || null
+        }&end_date=${toDate?.toString() || null}&moving_average=${range}`
+      )
         .then((response) => response.json())
         .then((data) => {
           setApiData(data);
           //console.log(data);
         });
     };
-   if(apiData && mvgAvg){
-    getMovingAvg();
-   }
+    if (apiData && mvgAvg) {
+      getMovingAvg();
+    }
   }, [fromDate, mvgAvg, range, toDate]);
-
 
   //fetch data on year change
   const fetchDataonChange = useCallback(async () => {
@@ -144,20 +147,18 @@ function App() {
         formData.append("start_date", selectedYear + "-01-01");
         formData.append("end_date", selectedYear + "-12-31");
       }
-       await fetch(
-        "https://moneyviz.azurewebsites.net/getsummary/date",
-        {
-          method: "POST",
-          body: formData,
-        }
-      )
+      await fetch("http://127.0.0.1:4000/getsummary/date", {
+        method: "POST",
+        body: formData,
+      })
         .then((response) => response.json())
         .then((data) => {
           setApiData(data);
         })
         .then(async () => {
-          
-          await fetch(`http://127.0.0.1:5000/getsummary/date?start_date=${fromDate}&end_date=${toDate}`)
+          await fetch(
+            `http://127.0.0.1:4000/getsummary/date?start_date=${fromDate}&end_date=${toDate}`
+          )
             .then((response) => response.json())
             .then((data) => {
               setSummary(data);
@@ -166,28 +167,37 @@ function App() {
         .catch((error) => {
           console.error("Error:", error);
           setErrorMsg(true);
-        }
-        );
+        });
     }
-
   }, [fromDate, toDate, selectedYear]);
 
   useEffect(() => {
     fetchDataonChange();
-  }, [fetchDataonChange, fromDate, toDate, buttonClicked, selectedYear,refresh]);
+  }, [
+    fetchDataonChange,
+    fromDate,
+    toDate,
+    buttonClicked,
+    selectedYear,
+    refresh,
+  ]);
 
   return (
     <div className="App mainPage">
       <h2 id="text" className="mt-2">
-        Money
+        M
         <i
           className="fa-solid fa-sack-dollar"
-          style={{ color: "lightgreen" }}
+          style={{
+            color: "lightgreen",
+            fontSize: "30px",
+            verticalAlign: "middle",
+          }}
         ></i>
-        Viz
+        ney Viz
       </h2>
       <hr style={{ color: "white" }}></hr>
-      <Container className="my-3 d-flex d-flex justify-content-between">
+      <Container className="d-flex justify-content">
         {/* //add react dilog box */}
         <Modal show={show} onHide={handleClose} centered>
           <Modal.Header closeButton>
@@ -211,6 +221,14 @@ function App() {
           <i className="fa-solid fa-upload"></i>
           {"  "} Upload file
         </Button>
+        <div className="px-2">
+          <ReactSelect
+          placeholder="Select data categorization"
+            onChange={(value) => setSelectedType(value?.value || 0)}
+            value={options.find((x) => x.value === selectedType)}
+            options={options}
+          ></ReactSelect>
+        </div>
         <Modal
           show={showCustomdate}
           onHide={() => setShowCustomdate(false)}
@@ -242,94 +260,103 @@ function App() {
                 }}
               />
               <Form.Text id="basic-addon1">Select year</Form.Text>
-              <ReactSelect
-                onChange={(option) => {
-                  setSelectedYear(option?.value || "");
-                  setFromDate(undefined);
-                  setToDate(undefined);
-                }}
-                options={years}
-                placeholder="Choose Year"
-                value={years?.find((x) => x.value === selectedYear)}
-              ></ReactSelect>
+              <div>
+                <ReactSelect
+                  onChange={(option) => {
+                    setSelectedYear(option?.value || "");
+                    setFromDate(undefined);
+                    setToDate(undefined);
+                  }}
+                  options={years}
+                  placeholder="Choose Year"
+                  value={years?.find((x) => x.value === selectedYear)}
+                ></ReactSelect>
+              </div>
             </div>
           </Modal.Body>
         </Modal>
       </Container>
       <hr></hr>
-     {errorMsg &&
-      <div className="d-flex justify-content-center">
-            <div className="alert alert-danger" role="alert">
-              <h4 className="alert-heading">Something went wrong! Please try later</h4>
-            </div>
-      </div>}
-      {apiData && (
+      {errorMsg && (
+        <div className="d-flex justify-content-center">
+          <div className="alert alert-danger" role="alert">
+            <h4 className="alert-heading">
+              Something went wrong! Please try later
+            </h4>
+          </div>
+        </div>
+      )}
+      {selectedType === 0 && apiData && (
         <Container className="d-flex mb-4 justify-content-between">
           <div className="d-flex">
-          <Displaybox
-            icon="fa-coins"
-            title="Avg. balance"
-            text={summary?.average_balance || 0}
-            theme="blueShadow"
-          ></Displaybox>
-          <Displaybox
-            icon="fa-money-bill-transfer"
-            title="Avg. credit"
-            text={summary?.average_credit || 0}
-            theme="greenShadow"
-          ></Displaybox>
-          <Displaybox
-            icon="fa-money-bill-transfer"
-            title="Avg. debit"
-            text={summary?.average_debit || 0}
-            theme="redShadow"
-          ></Displaybox>
+            <Displaybox
+              icon="fa-coins"
+              title="Avg. balance"
+              text={summary?.average_balance || 0}
+              theme="blueShadow"
+            ></Displaybox>
+            <Displaybox
+              icon="fa-money-bill-transfer"
+              title="Avg. credit"
+              text={summary?.average_credit || 0}
+              theme="greenShadow"
+            ></Displaybox>
+            <Displaybox
+              icon="fa-money-bill-transfer"
+              title="Avg. debit"
+              text={summary?.average_debit || 0}
+              theme="redShadow"
+            ></Displaybox>
           </div>
-
           <div className="d-flex justify-content-center align-items-center">
-            {!mvgAvg &&
-            <Button
-              variant="outline-success"
-              className="btn btn-outline-success"
-              onClick={() => setMvgAvg(true)}
-            >Moving average</Button>}
-            {mvgAvg && 
-            <RangeSelector setRange={setRange}></RangeSelector>}
+            {!mvgAvg && (
+              <Button
+                variant="outline-success"
+                className="btn btn-outline-success"
+                onClick={() => setMvgAvg(true)}
+              >
+                Moving average
+              </Button>
+            )}
+            {mvgAvg && <RangeSelector setRange={setRange}></RangeSelector>}
           </div>
         </Container>
       )}
-      <RectangleBox></RectangleBox>
-      {apiData && !errorMsg ? (
-
-        <div>
-          
-        </div>
-        // <LineGraph
-        //   setButtonClicked={setButtonClicked}
-        //   apiData={apiData}
-        //   selectedYear={selectedYear}
-        //   fromDate={fromDate}
-        //   toDate={toDate}
-        //   setFromDate={setFromDate}
-        //   setToDate={setToDate}
-        //   buttonClicked={buttonClicked}
-        //   setShowcustomdate={setShowCustomdate}
-        //   setRefresh={setRefresh}
-        //   refresh={refresh}
-        // ></LineGraph>
-      ) : (
-        <div className="d-flex justify-content-center">
-          {selectedFile && !errorMsg && (
-            <>
-              <Spinner
-                animation="border"
-                variant="success"
-                title="Summarizing your data"
-              />
-            </>
+      {selectedType === 0 && (
+        <>
+          {apiData && !errorMsg ? (
+            <div>
+              <LineGraph
+                setButtonClicked={setButtonClicked}
+                apiData={apiData}
+                selectedYear={selectedYear}
+                fromDate={fromDate}
+                toDate={toDate}
+                setFromDate={setFromDate}
+                setToDate={setToDate}
+                buttonClicked={buttonClicked}
+                setShowcustomdate={setShowCustomdate}
+                setRefresh={setRefresh}
+                refresh={refresh}
+              ></LineGraph>
+            </div>
+          ) : (
+            <div className="d-flex justify-content-center">
+              {selectedFile && !errorMsg && (
+                <>
+                  <Spinner
+                    animation="border"
+                    variant="success"
+                    title="Summarizing your data"
+                  />
+                </>
+              )}
+            </div>
           )}
-        </div>
+        </>
       )}
+      {selectedType === 1 && <TreemapComponent></TreemapComponent>}
+      {selectedType === 2 && <DisplayCategory></DisplayCategory>}
       {/* {apiData && <BarChart apiData={apiData}></BarChart>} */}
     </div>
   );
