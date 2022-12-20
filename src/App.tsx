@@ -84,7 +84,7 @@ function App() {
       setShow(false);
       const formData = new FormData();
       formData.append("file", selectedFile);
-      await fetch("http://127.0.0.1:4000/upload/csv", {
+      await fetch("https://moneyviz.azurewebsites.net/upload/csv", {
         method: "POST",
         body: formData,
       })
@@ -94,7 +94,7 @@ function App() {
         })
         //call summary api
         .then(async () => {
-          await fetch(`http://127.0.0.1:4000/getsummary/date`)
+          await fetch(`https://moneyviz.azurewebsites.net/getsummary/date`)
             .then((response) => response.json())
             .then((data) => {
               setSummary(data);
@@ -119,7 +119,7 @@ function App() {
   useEffect(() => {
     const getMovingAvg = async () => {
       await fetch(
-        `http://127.0.0.1:4000/getsummary/movingaverage?start_date=${
+        `https://moneyviz.azurewebsites.net/getsummary/movingaverage?start_date=${
           fromDate?.toString() || null
         }&end_date=${toDate?.toString() || null}&moving_average=${range}`
       )
@@ -147,7 +147,7 @@ function App() {
         formData.append("start_date", selectedYear + "-01-01");
         formData.append("end_date", selectedYear + "-12-31");
       }
-      await fetch("http://127.0.0.1:4000/getsummary/date", {
+      await fetch("https://moneyviz.azurewebsites.net/getsummary/date", {
         method: "POST",
         body: formData,
       })
@@ -157,7 +157,7 @@ function App() {
         })
         .then(async () => {
           await fetch(
-            `http://127.0.0.1:4000/getsummary/date?start_date=${fromDate}&end_date=${toDate}`
+            `https://moneyviz.azurewebsites.net/getsummary/date?start_date=${fromDate}&end_date=${toDate}`
           )
             .then((response) => response.json())
             .then((data) => {
@@ -221,6 +221,7 @@ function App() {
           <i className="fa-solid fa-upload"></i>
           {"  "} Upload file
         </Button>
+       {apiData &&
         <div className="px-2">
           <ReactSelect
           placeholder="Select data categorization"
@@ -228,7 +229,7 @@ function App() {
             value={options.find((x) => x.value === selectedType)}
             options={options}
           ></ReactSelect>
-        </div>
+        </div>}
         <Modal
           show={showCustomdate}
           onHide={() => setShowCustomdate(false)}

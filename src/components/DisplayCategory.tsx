@@ -1,19 +1,23 @@
 import React, { useEffect, useMemo } from "react";
+import { Spinner } from "react-bootstrap";
 import SvgRect from "../Elements/SvgRect/SvgRect";
 import "./TreemapComponent.css";
 type Props = {};
 
 const DisplayCategory = (props: Props) => {
   const [category, setCategory] = React.useState<any[]>();
+  const [loading,setLoading] = React.useState(false);
 
   useEffect(() => {
     const fetchCategory = async () => {
+      setLoading(true);
       const result = await fetch(
-        //`http://127.0.0.1:4000/getsummary/category/summary/transaction?parent_type=category`
-        "http://127.0.0.1:4000/getsummary/category/transaction?parent_type=sub_category"
+        //`https://moneyviz.azurewebsites.net/getsummary/category/summary/transaction?parent_type=category`
+        "https://moneyviz.azurewebsites.net/getsummary/category/transaction?parent_type=sub_category"
       );
       const category = await result.json();
       setCategory(category);
+      setLoading(false);
     };
     fetchCategory();
   }, []);
@@ -53,10 +57,22 @@ const DisplayCategory = (props: Props) => {
   }, [category]);
 
   return (
-    <div>
+    <div className="w-100">
+     {loading && (
+              <div className=" d-flex justify-content-center pt-1">
+                <Spinner
+                  typeof="grow"
+                  animation="border"
+                  variant="success"
+                  className=""
+                ></Spinner>
+              </div>
+            )}
+      {!loading &&
       <svg width="1200" height="600">
         {rectangles}
-      </svg>
+      </svg>}
+      
     </div>
   );
 };

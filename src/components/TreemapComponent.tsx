@@ -40,9 +40,9 @@ function RectangleBox() {
     const fetchparent = async () => {
       setLoading(true);
       const result = await fetch(
-        //http://127.0.0.1:4000
-        //https://moneyviz.azurewebsites.net/getsummary/category/summary/date?child_type=expense&parent_type=expense&expense_type=credit
-        `http://127.0.0.1:4000/getsummary/category/summary/date?child_type=${currentState?.child_type}&parent_type=${currentState?.parent_type}&expense_type=${category}`
+        //https://moneyviz.azurewebsites.net//
+        //https://moneyviz.azurewebsites.net//getsummary/category/summary/date?child_type=expense&parent_type=expense&expense_type=credit
+        `https://moneyviz.azurewebsites.net/getsummary/category/summary/date?child_type=${currentState?.child_type}&parent_type=${currentState?.parent_type}&expense_type=${category}`
       );
       const parent = await result.json();
       setParent(parent);
@@ -196,7 +196,7 @@ function RectangleBox() {
                 ></Spinner>
               </div>
             )}
-            <h3 className="text-center treeMapTitle">Transaction category </h3>{" "}
+            <h3 className="text-center treeMapTitle">Transaction category bank </h3>{" "}
             {!loading && (
               <div className="titleHeader" style={{maxWidth:'1240px'}}>
                 
