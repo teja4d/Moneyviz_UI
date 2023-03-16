@@ -1,6 +1,8 @@
 import React from "react";
-import { labelCategory, ReturnCategoryType } from "../../helperfunctions/ReturnCategory";
 import "./HireachyLabel.css";
+import { ReturnCategoryType, labelCategory } from "../../helperfunctions/ReturnCategory";
+
+
 type Props = {
   path: ReturnCategoryType[];
   onclick: (x:labelCategory) => void;
@@ -12,7 +14,7 @@ function HireachyLabel({ path, onclick }: Props) {
         index === self.findIndex((t) => t.label === thing.label)
     );
   return (
-    <div className="hireachy">
+    <div className="hireachy bg-primary px-2 py-1 my-2">
       <>
         {unique.map((x) => {
           return (

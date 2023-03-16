@@ -1,8 +1,7 @@
-import { svg } from 'd3'
 import React from 'react';
 import * as d3 from 'd3';
-import useD3 from '../hooks/useD3'
-import { apiData } from '../App';
+import useD3 from '../../hooks/useD3'
+import { apiData } from '../../App';
 
 type Props = {
     apiData:apiData[]
@@ -60,6 +59,7 @@ function BarChart({apiData}: Props) {
         .style("text-anchor", "middle")
         .style("font-size", 17)
     },[apiData])
+
 return (
         <div>
             <svg ref={ref} width={500} height={500} />

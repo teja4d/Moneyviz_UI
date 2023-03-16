@@ -10,15 +10,16 @@ import {
 } from "react-bootstrap";
 import ReactSelect from "react-select";
 import "./App.css";
-import Displaybox from "./components/Displaybox";
-import DisplayCategory from "./components/DisplayCategory";
-import LineGraph from "./components/linegraph";
-import TreemapComponent from "./components/TreemapComponent";
+import Displaybox from "./Elements/Displaybox/Displaybox";
+import DisplayCategory from "./components/Treemap/DisplayCategory";
+import LineGraph from "./components/Linegraph/linegraph"; 
+import TreemapComponent from "./components/Treemap/TreemapComponent";
 import RangeSelector from "./Elements/Slider/Slider";
+import { options, years } from "./FieldNames/Homepage";
 
-type ReactSelectOption = {
-  value: string;
-  label: string;
+export type ReactSelectOption = {
+  value: string|number;
+  label: string|number;
 };
 
 export type apiData = {
@@ -29,6 +30,7 @@ export type apiData = {
   transaction_id: string;
   day_of_week: string;
 };
+
 export type avgData = {
   average_balance: number;
   transaction_date: Date;
@@ -60,31 +62,14 @@ function App() {
   const [summary, setSummary] = useState<summary>();
   const [refresh, setRefresh] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<boolean>(false);
-  const options =
-    //react Select options
-    [
-      { value: 0, label: "Show average balance graph" },
-      { value: 1, label: "Show data categories by bank" },
-      { value: 2, label: "Show data categories by general" },
-    ];
   const [selectedType, setSelectedType] = useState<number>();
-  const [years, setYears] = React.useState<ReactSelectOption[] | undefined>([
-    { value: "", label: "All Years" },
-    { value: "2015", label: "2015" },
-    { value: "2016", label: "2016" },
-    { value: "2017", label: "2017" },
-    { value: "2018", label: "2018" },
-    { value: "2019", label: "2019" },
-    { value: "2020", label: "2020" },
-    { value: "2021", label: "2021" },
-    { value: "2022", label: "2022" },
-  ]);
+  
   const handleSubmit = useCallback(async () => {
     if (selectedFile !== null) {
       setShow(false);
       const formData = new FormData();
       formData.append("file", selectedFile);
-      await fetch("https://moneyviz.azurewebsites.net/upload/csv", {
+      await fetch("http://localhost:5000/upload/csv", {
         method: "POST",
         body: formData,
       })
@@ -94,7 +79,7 @@ function App() {
         })
         //call summary api
         .then(async () => {
-          await fetch(`https://moneyviz.azurewebsites.net/getsummary/date`)
+          await fetch(`http://localhost:5000/getsummary/date`)
             .then((response) => response.json())
             .then((data) => {
               setSummary(data);
@@ -119,7 +104,7 @@ function App() {
   useEffect(() => {
     const getMovingAvg = async () => {
       await fetch(
-        `https://moneyviz.azurewebsites.net/getsummary/movingaverage?start_date=${
+        `http://localhost:5000/getsummary/movingaverage?start_date=${
           fromDate?.toString() || null
         }&end_date=${toDate?.toString() || null}&moving_average=${range}`
       )
@@ -132,7 +117,7 @@ function App() {
     if (apiData && mvgAvg) {
       getMovingAvg();
     }
-  }, [fromDate, mvgAvg, range, toDate]);
+  }, [apiData, fromDate, mvgAvg, range, toDate]);
 
   //fetch data on year change
   const fetchDataonChange = useCallback(async () => {
@@ -147,7 +132,7 @@ function App() {
         formData.append("start_date", selectedYear + "-01-01");
         formData.append("end_date", selectedYear + "-12-31");
       }
-      await fetch("https://moneyviz.azurewebsites.net/getsummary/date", {
+      await fetch("http://localhost:5000/getsummary/date", {
         method: "POST",
         body: formData,
       })
@@ -157,7 +142,7 @@ function App() {
         })
         .then(async () => {
           await fetch(
-            `https://moneyviz.azurewebsites.net/getsummary/date?start_date=${fromDate}&end_date=${toDate}`
+            `http://localhost:5000/getsummary/date?start_date=${fromDate}&end_date=${toDate}`
           )
             .then((response) => response.json())
             .then((data) => {
@@ -198,6 +183,7 @@ function App() {
       </h2>
       <hr style={{ color: "white" }}></hr>
       <Container className="d-flex justify-content">
+        {/* <TidyTree data={data}></TidyTree> */}
         {/* //add react dilog box */}
         <Modal show={show} onHide={handleClose} centered>
           <Modal.Header closeButton>
@@ -293,19 +279,19 @@ function App() {
             <Displaybox
               icon="fa-coins"
               title="Avg. balance"
-              text={summary?.average_balance || 0}
+              text={+(summary?.average_balance.toFixed(2) || 0)}
               theme="blueShadow"
             ></Displaybox>
             <Displaybox
               icon="fa-money-bill-transfer"
               title="Avg. credit"
-              text={summary?.average_credit || 0}
+              text={+(summary?.average_credit.toFixed(2) || 0)}
               theme="greenShadow"
             ></Displaybox>
             <Displaybox
               icon="fa-money-bill-transfer"
               title="Avg. debit"
-              text={summary?.average_debit || 0}
+              text={+(summary?.average_debit.toFixed(2) || 0)}
               theme="redShadow"
             ></Displaybox>
           </div>
@@ -356,9 +342,14 @@ function App() {
           )}
         </>
       )}
-      {selectedType === 1 && <TreemapComponent></TreemapComponent>}
-      {selectedType === 2 && <DisplayCategory></DisplayCategory>}
+      {selectedType === 1 && <>
+      <TreemapComponent></TreemapComponent>
+      </>}
+      {selectedType === 2 && <>
+      <DisplayCategory></DisplayCategory> 
+      </>}
       {/* {apiData && <BarChart apiData={apiData}></BarChart>} */}
+     
     </div>
   );
 }

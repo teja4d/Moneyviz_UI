@@ -20,4 +20,4 @@ const Displaybox = ({title,text,icon,theme}: Props) => {
   )
 }
 
-export default Displaybox
+export default Displaybox;

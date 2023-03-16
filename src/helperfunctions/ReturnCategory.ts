@@ -1,4 +1,4 @@
-export type Category = 'transaction' | 'description' | 'date' | 'day'|'day_transactions';
+export type Category = 'transaction' | 'description' | 'date' | 'day'| 'day_transactions';
 export type labelCategory = 'Incoming/Outgoing' | 'Loyds category' | 'Transaction description' | 'Transaction date' | 'Transaction on day';
 
 export type ReturnCategoryType = {
@@ -8,7 +8,7 @@ export type ReturnCategoryType = {
     clicked?: boolean;
 }
 
-export const ReturnCategory = (category: Category,child:string,clicked=false) : ReturnCategoryType => {
+export const returnCategory = (category: Category,child:string,clicked=false) : ReturnCategoryType => {
     switch(category) {
         case 'transaction':
             return {

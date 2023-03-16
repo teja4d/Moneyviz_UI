@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo } from "react";
 import { Spinner } from "react-bootstrap";
-import SvgRect from "../Elements/SvgRect/SvgRect";
+import SvgRect from "../../Elements/SvgRect/SvgRect";
 import "./TreemapComponent.css";
 type Props = {};
 
@@ -12,8 +12,7 @@ const DisplayCategory = (props: Props) => {
     const fetchCategory = async () => {
       setLoading(true);
       const result = await fetch(
-        //`https://moneyviz.azurewebsites.net/getsummary/category/summary/transaction?parent_type=category`
-        "https://moneyviz.azurewebsites.net/getsummary/category/transaction?parent_type=sub_category"
+        "http://localhost:5000/getsummary/category/transaction?parent_type=sub_category"
       );
       const category = await result.json();
       setCategory(category);

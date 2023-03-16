@@ -1,16 +1,18 @@
 import React, { useMemo, useState } from "react";
 import { useEffect } from "react";
 import { Container, Spinner } from "react-bootstrap";
-import HireachyLabel from "../Elements/HireachyLabel/HireachyLabel";
-import Hoverbox from "../Elements/Hoverbox/Hoverbox";
-import SvgRect from "../Elements/SvgRect/SvgRect";
-import SvgText from "../Elements/SvgText/SvgText";
-import {
-  labelCategory,
-  ReturnCategory,
-  ReturnCategoryType,
-} from "../helperfunctions/ReturnCategory";
+import HireachyLabel from "../../Elements/HireachyLabel/HireachyLabel";
+import Hoverbox from "../../Elements/Hoverbox/Hoverbox";
+import SvgRect from "../../Elements/SvgRect/SvgRect";
+import SvgText from "../../Elements/SvgText/SvgText";
 import "./TreemapComponent.css";
+import Calender from "../Calender/Calender";
+import { Main } from "../../api/treemap";
+import {
+  ReturnCategoryType,
+  returnCategory,
+  labelCategory,
+} from "../../helperfunctions/ReturnCategory";
 
 type currentStateProps = {
   parent_type: string;
@@ -18,17 +20,19 @@ type currentStateProps = {
 };
 
 function RectangleBox() {
-  const [blockPickerColor, setBlockPickerColor] = useState("#37d67a");
-  const [parent, setParent] = React.useState<any>();
+  const [blockPickerColor, setBlockPickerColor] = useState("#387DD6");
+  const [parent, setParent] = React.useState<Main[]>();
   const [list, setList] = React.useState<any>();
   const [labelName, setLabelName] = React.useState<string>("");
   const [loading, setLoading] = React.useState<boolean>(false);
+  const [calenderData, setCalenderdata] = useState<string>("");
   const [currentState, setCurrentState] = React.useState<currentStateProps>({
     parent_type: "expense",
     child_type: "",
   });
-  const [category, setCategory] = React.useState<string>();
+  const [category, setCategory] = React.useState<"credit" | "debit">("credit");
   const expenseRef = React.useRef<boolean>(true);
+
   const [path, setPath] = React.useState<ReturnCategoryType[]>([
     {
       label: "Incoming/Outgoing",
@@ -36,19 +40,21 @@ function RectangleBox() {
       child: "",
     },
   ]);
+
   useEffect(() => {
-    const fetchparent = async () => {
+    (async () => {
       setLoading(true);
-      const result = await fetch(
-        //https://moneyviz.azurewebsites.net//
-        //https://moneyviz.azurewebsites.net//getsummary/category/summary/date?child_type=expense&parent_type=expense&expense_type=credit
-        `https://moneyviz.azurewebsites.net/getsummary/category/summary/date?child_type=${currentState?.child_type}&parent_type=${currentState?.parent_type}&expense_type=${category}`
-      );
-      const parent = await result.json();
-      setParent(parent);
-      setLoading(false);
-    };
-    fetchparent();
+      try {
+        const result = await fetch(
+          `http://localhost:5000/getsummary/category/summary/date?child_type=${currentState?.child_type}&parent_type=${currentState?.parent_type}&expense_type=${category}`
+        );
+        const parent = await result.json();
+        setParent(parent);
+      } catch (err) {
+        console.log(err);
+      }
+    })();
+    setLoading(false);
   }, [category, currentState]);
 
   useEffect(() => {
@@ -60,7 +66,7 @@ function RectangleBox() {
         });
         return [
           ...newPrev,
-          ReturnCategory(
+          returnCategory(
             parent[0].category,
             currentState.child_type || "",
             true
@@ -68,7 +74,6 @@ function RectangleBox() {
         ];
       });
     //update the category
-    parent && setCategory(parent[0].type);
   }, [currentState.child_type, parent]);
 
   const handleLabelClick = (x: labelCategory) => {
@@ -139,9 +144,10 @@ function RectangleBox() {
               <g
                 key={i}
                 transform="translate(0,0)"
-                onClick={(e) => {
+                onDoubleClick={(e) => {
                   handleRectangleClick(e, d);
                 }}
+                onClick={() => setCalenderdata(d.label)}
                 className="rectangleContainer"
                 onMouseMove={showWhitebox}
                 onMouseLeave={(e) => {
@@ -183,7 +189,7 @@ function RectangleBox() {
   }, [blockPickerColor, category, currentState, parent]);
   return (
     <>
-      <Container className="w-100 mb-4">
+      <Container className=" mb-4">
         <div className="rectagleBackdrop">
           <div>
             {loading && (
@@ -196,17 +202,19 @@ function RectangleBox() {
                 ></Spinner>
               </div>
             )}
-            <h3 className="text-center treeMapTitle">Transaction category bank </h3>{" "}
+            <h3 className="text-center treeMapTitle">
+              Transaction category bank{" "}
+            </h3>{" "}
             {!loading && (
-              <div className="titleHeader" style={{maxWidth:'1240px'}}>
-                
-                <div className="d-flex justify-content-between">
-                <HireachyLabel
+              <div className="titleHeader">
+                <div className="d-inline-block" style={{width:"1200px"}}>
+                <div className="d-flex justify-content-between" >
+                  <HireachyLabel
                     path={path}
                     onclick={handleLabelClick}
                   ></HireachyLabel>
                   <div style={{ float: "right" }}>
-                    <p className="text-white mx-4">Selected color:</p>
+                    <p className="text-white mx-2 ">Color:</p>
                     <input
                       type="color"
                       value={blockPickerColor}
@@ -215,6 +223,7 @@ function RectangleBox() {
                       }}
                     />
                   </div>
+                </div>
                 </div>
               </div>
             )}
@@ -228,6 +237,9 @@ function RectangleBox() {
             <Hoverbox labelName={labelName} listData={list} />
           )}
         </div>
+        {currentState.parent_type === "description" && category ? (
+          <Calender description={calenderData} type={category} />
+        ) : null}
       </Container>
     </>
   );

@@ -1,9 +1,8 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import * as d3 from "d3";
-import { apiData } from "../App";
+import { apiData } from "../../App";
 import { Button, Container, InputGroup } from "react-bootstrap";
-import { formatDate } from "../helperfunctions/Daterange";
-import Displaybox from "./Displaybox";
+import { formatDate } from "../../helperfunctions/Daterange";
 
 type LinegraphProps = {
   apiData: apiData[];

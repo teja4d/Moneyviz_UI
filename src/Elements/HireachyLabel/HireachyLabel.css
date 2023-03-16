@@ -2,24 +2,21 @@
     display: flex;
     justify-content: center;
     align-items:flex-start;
-    margin: 4px 3.5%;
     font-size: xx-large;
     color: rgb(248, 246, 246);
-    background-color: rgb(47, 110, 228);
     float: left;
-    padding: 8px;
+    height:32px;
 }
 
 .hireachy p{
     cursor: pointer;
-    padding: 0 4px;
-    margin: 0 2px;
+
 }
 .hireachy p:hover{
     color: rgb(47, 110, 228);
     background-color: rgb(248, 246, 246);
     border-radius: 2px;
-    padding:0 4px;
+
 }
 .hireachy .bold{
     color: black;

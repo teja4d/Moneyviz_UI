@@ -17,7 +17,6 @@ export type RectsProps = {
 };
 
 const SvgRect = ({ rects, fillColor , category ,color }: Props) => {
-  console.log(color,lightenRgbColor(color,50))
   return (
     <>
       <rect
